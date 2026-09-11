@@ -38,3 +38,31 @@ def add_item():
     }
     itens.append(novo_item)
     return jsonify(novo_item), 201
+
+@app.route("/items/<id>", methods=["PUT"])
+def atualizar_item(id):
+    item = next((i for i in itens if i["id"] == id), None)
+    if not item:
+        return jsonify({"erro": "Item não encontrado!"}), 404
+
+    dados = request.get_json()
+    item["nome"] = dados.get('nome', dados["nome"])
+    item["quantidade"] = dados.get('quantidade', daods["quantidade"])
+    item["categoria"] = dados.get('categoria', dados["categoria"])
+    item["prioridade"] = dados.get('prioridade', dados["prioridade"])
+    item["comprado"] = dados.get('comprado', dados["coprado"])
+
+    return jsonify(Item)
+
+@app.route("/items/<id>", methods=["DELETE"])
+def excluir_item(id):
+    global itens
+    item = next((i for i in itens if i["id"] == id), None)
+    if not item:
+        return jsonify({"erro": "Item não encontrado!"}), 404
+
+    itens = [i for i in itens if i["id"] != id]
+    return jsonify({"mensagem": "Item excluído com sucesso!"})
+
+if __name__ == "__main__":
+    app.run(debug=True)
